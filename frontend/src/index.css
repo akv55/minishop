@@ -93,6 +93,12 @@ button {
   }
 }
 
+@media (min-width: 1280px) {
+  .grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 .card {
   background: var(--surface);
   border-radius: var(--radius);
