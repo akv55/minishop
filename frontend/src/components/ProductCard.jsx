@@ -4,10 +4,10 @@ import { useCart } from '../context/CartContext';
 
 
 const ProductCard = ({ product }) => {
-    const { addTocart } = useCart();
+    const { addToCart } = useCart();
 
     const handleAddToCart = () => {
-        addTocart(product, 1);
+        addToCart(product, 1);
     }
 
     return (
@@ -20,13 +20,18 @@ const ProductCard = ({ product }) => {
                 />
             </Link>
             <div className="product-body">
-                <Link to={`/product/${product._id}`} className="product-title">
+                <Link to={`/product/${product._id}`} className="product-title-link">
                     <h3 className="product-title">{product.name}</h3>
+                    <span className="product-price">₹{product.price}</span>
                 </Link>
+
                 <div className="product-info">
-                    <span className="product-price">${product.price}</span>
-                    <button>
-                        {product.countInstock ===0 ?'Out of Stock' :'Add to Cart'}
+                    <button
+                        onClick={handleAddToCart}
+                        className="btn btn-primary product-add-button"
+                        disabled={product.countInStock === 0}
+                    >
+                        {product.countInStock === 0 ? 'Out of Stock' : 'Add to Cart'}
                     </button>
                 </div>
             </div>

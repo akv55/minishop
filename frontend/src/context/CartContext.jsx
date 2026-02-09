@@ -1,5 +1,4 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
 
 const CartContext = createContext();
 
@@ -41,29 +40,22 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
     }, [state.cartItems]);
 
-    const addToCart = async (product, qty, replaceQty = false) => {
-        try {
-            const existItem = state.cartItems.find((x) => x.product === product._id);
-            const quantity = replaceQty ? qty : (existItem ? existItem.qty + qty : qty);
+    const addToCart = (product, qty, replaceQty = false) => {
+        const productId = product._id ?? product.id;
+        const existItem = state.cartItems.find((x) => x.product === productId);
+        const quantity = replaceQty ? qty : (existItem ? existItem.qty + qty : qty);
 
-            // Optimistic UI or API validation
-            const { data } = await axios.post('/api/cart', { productId: product._id, qty: quantity });
-
-            dispatch({
-                type: 'ADD_ITEM',
-                payload: {
-                    product: data.item.product, // ID
-                    name: data.item.name,
-                    image: data.item.image,
-                    price: data.item.price,
-                    countInStock: data.item.countInStock,
-                    qty: data.item.qty,
-                },
-            });
-        } catch (error) {
-            console.error("Failed to add to cart", error);
-            alert(error.response?.data?.message || error.message);
-        }
+        dispatch({
+            type: 'ADD_ITEM',
+            payload: {
+                product: productId,
+                name: product.name,
+                image: product.image,
+                price: product.price,
+                countInStock: product.countInStock ?? product.countInstock ?? 5,
+                qty: quantity,
+            },
+        });
     };
 
     const removeFromCart = (id) => {
